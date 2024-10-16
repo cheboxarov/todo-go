@@ -1,0 +1,14 @@
+version: "3.8"
+
+volumes:
+  pg_data:
+
+services:
+  db:
+    image: postgres:latest
+    ports:
+      - "5436:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=qwerty

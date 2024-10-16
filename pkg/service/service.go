@@ -1,11 +1,22 @@
 package service
 
-import "github.com/cheboxarov/todo-go/pkg/repository"
+import (
+	todogo "github.com/cheboxarov/todo-go"
+	"github.com/cheboxarov/todo-go/pkg/repository"
+)
 
 type Authorization interface {
+	CreateUser(user todogo.User) (int, error)
+	GenerateToken(username string, password string) (string, error)
+	ParseToken(token string) (int, error)
 }
 
 type TodoList interface {
+	Create(userId int, list todogo.TodoList) (int, error)
+	GetAll(userId int) ([]todogo.TodoList, error)
+	GetById(userId int, listId int) (todogo.TodoList, error)
+	Delete(userId int, listId int) error
+	Update(userId int, listId int, input todogo.UpdateListInput) error
 }
 
 type TodoItem interface {
@@ -18,5 +29,8 @@ type Service struct {
 }
 
 func NewService(repos *repository.Repository) *Service {
-	return &Service{}
+	return &Service{
+		Authorization: NewAuthService(repos.Authorization),
+		TodoList:      NewTodoListService(repos.TodoList),
+	}
 }
