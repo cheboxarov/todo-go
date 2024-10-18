@@ -13,15 +13,15 @@ type Error_ struct {
 }
 
 func isNotFoundInDB(err string) bool {
-	if strings.Contains(err, "sql: no rows in result set") {
-		return true
-	}
-	return false
+	return strings.Contains(err, "sql: no rows in result set")
 }
 
 func NewErrorResponse(c *gin.Context, statusCode int, message string, logMessage string) {
 	if statusCode == http.StatusInternalServerError && len(message) == 0 {
 		message = "something is wrong"
+	}
+	if len(logMessage) == 0 {
+		logMessage = message
 	}
 	logrus.Error(logMessage)
 	if isNotFoundInDB(logMessage) {
